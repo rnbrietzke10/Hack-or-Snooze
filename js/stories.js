@@ -50,3 +50,27 @@ function putStoriesOnPage() {
 
   $allStoriesList.show();
 }
+
+/**Get story information from sumbit story form */
+async function getAndShowNewStory(evt) {
+  evt.preventDefault();
+  // Get form data: author, title, url
+  const author = $("#author").val();
+  const title = $("#title").val();
+  const url = $("#url").val();
+  // Get user info from local storage
+  const user = localStorage.getItem("username");
+
+  const token = localStorage.getItem("token");
+  const userStory = {
+    author,
+    title,
+    url,
+  };
+
+  const newStory = await storyList.addStory(user, userStory);
+  const $newStoryMarkup = generateStoryMarkup(newStory);
+  $allStoriesList.prepend($newStoryMarkup);
+}
+
+$("#submit-btn").on("click", getAndShowNewStory);

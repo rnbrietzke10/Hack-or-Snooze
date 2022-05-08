@@ -24,7 +24,14 @@ class Story {
 
   getHostName() {
     // UNIMPLEMENTED: complete this function!
-    return "hostname.com";
+    let stroyUrl = this.url;
+    let hostName = "";
+    if (stroyUrl.indexOf("//") > -1) {
+      hostName = stroyUrl.split("/")[2];
+    } else {
+      hostName = stroyUrl.split("/")[0];
+    }
+    return hostName;
   }
 }
 
@@ -71,18 +78,12 @@ class StoryList {
    * Returns the new Story instance
    */
 
-  // this.storyId = storyId;
-  //   this.title = title;
-  //   this.author = author;
-  //   this.url = url;
-  //   this.username = username;
-  //   this.createdAt = createdAt;
-
   async addStory(user, newStory) {
     // UNIMPLEMENTED: complete this function!
     const response = await axios({
       method: "post",
       url: `${BASE_URL}/stories`,
+      username: user,
       data: {
         token: localStorage.getItem("token"),
         story: {
