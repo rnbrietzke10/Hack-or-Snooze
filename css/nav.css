@@ -15,6 +15,12 @@ nav {
 .nav-link {
   font-size: 0.85rem;
   margin: 0 3px;
+  padding-right: 10px;
+  border-right: 2px solid #000;
+}
+
+#submit-link {
+  font-weight: 400;
 }
 
 .nav-right {

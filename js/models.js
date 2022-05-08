@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const BASE_URL = 'https://hack-or-snooze-v3.herokuapp.com';
+const BASE_URL = "https://hack-or-snooze-v3.herokuapp.com";
 
 /******************************************************************************
  * Story: a single story in the system
@@ -24,7 +24,7 @@ class Story {
 
   getHostName() {
     // UNIMPLEMENTED: complete this function!
-    return 'hostname.com';
+    return "hostname.com";
   }
 }
 
@@ -54,11 +54,11 @@ class StoryList {
     // query the /stories endpoint (no auth required)
     const response = await axios({
       url: `${BASE_URL}/stories`,
-      method: 'GET',
+      method: "GET",
     });
 
     // turn plain old story objects from API into instances of Story class
-    const stories = response.data.stories.map((story) => new Story(story));
+    const stories = response.data.stories.map(story => new Story(story));
 
     // build an instance of our own class using the new array of stories
     return new StoryList(stories);
@@ -79,21 +79,35 @@ class StoryList {
   //   this.createdAt = createdAt;
 
   async addStory(user, newStory) {
-    const { title, author, url } = newStory;
-
     // UNIMPLEMENTED: complete this function!
-    const response = await axios.post(`${BASE_URL}/stories`, {
-      token: localStorage.getItem('token'),
+    const response = await axios({
+      method: "post",
+      url: `${BASE_URL}/stories`,
       data: {
+        token: localStorage.getItem("token"),
         story: {
-          title,
-          author,
-          url,
+          title: newStory.title,
+          author: newStory.author,
+          url: newStory.url,
         },
       },
     });
+    return new Story(response.data.story);
 
-    console.log('Response' + response);
+    // console.dir(response);
+    //console.log(response.data);
+    /**
+     * OUTPUT FROM ABOVE CONSOLE.LOG()
+     * {story: {…}}
+            story:
+            author: "Me"
+            createdAt: "2022-05-08T01:51:50.803Z"
+            storyId: "4b7b7fed-061c-48f3-ba3a-53d14b7929aa"
+            title: "Test"
+            updatedAt: "2022-05-08T01:51:50.803Z"
+            url: "http://meow.com"
+            username: "Ren3Test"
+     */
   }
 }
 
@@ -116,8 +130,8 @@ class User {
     this.createdAt = createdAt;
 
     // instantiate Story instances for the user's favorites and ownStories
-    this.favorites = favorites.map((s) => new Story(s));
-    this.ownStories = ownStories.map((s) => new Story(s));
+    this.favorites = favorites.map(s => new Story(s));
+    this.ownStories = ownStories.map(s => new Story(s));
 
     // store the login token on the user so it's easy to find for API calls.
     this.loginToken = token;
@@ -133,7 +147,7 @@ class User {
   static async signup(username, password, name) {
     const response = await axios({
       url: `${BASE_URL}/signup`,
-      method: 'POST',
+      method: "POST",
       data: { user: { username, password, name } },
     });
 
@@ -160,7 +174,7 @@ class User {
   static async login(username, password) {
     const response = await axios({
       url: `${BASE_URL}/login`,
-      method: 'POST',
+      method: "POST",
       data: { user: { username, password } },
     });
 
@@ -186,7 +200,7 @@ class User {
     try {
       const response = await axios({
         url: `${BASE_URL}/users/${username}`,
-        method: 'GET',
+        method: "GET",
         params: { token },
       });
 
@@ -203,7 +217,7 @@ class User {
         token
       );
     } catch (err) {
-      console.error('loginViaStoredCredentials failed', err);
+      console.error("loginViaStoredCredentials failed", err);
       return null;
     }
   }
