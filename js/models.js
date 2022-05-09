@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-const BASE_URL = "https://hack-or-snooze-v3.herokuapp.com";
+const BASE_URL = 'https://hack-or-snooze-v3.herokuapp.com';
 
 /******************************************************************************
  * Story: a single story in the system
@@ -25,11 +25,11 @@ class Story {
   getHostName() {
     // UNIMPLEMENTED: complete this function!
     let stroyUrl = this.url;
-    let hostName = "";
-    if (stroyUrl.indexOf("//") > -1) {
-      hostName = stroyUrl.split("/")[2];
+    let hostName = '';
+    if (stroyUrl.indexOf('//') > -1) {
+      hostName = stroyUrl.split('/')[2];
     } else {
-      hostName = stroyUrl.split("/")[0];
+      hostName = stroyUrl.split('/')[0];
     }
     return hostName;
   }
@@ -61,11 +61,11 @@ class StoryList {
     // query the /stories endpoint (no auth required)
     const response = await axios({
       url: `${BASE_URL}/stories`,
-      method: "GET",
+      method: 'GET',
     });
 
     // turn plain old story objects from API into instances of Story class
-    const stories = response.data.stories.map(story => new Story(story));
+    const stories = response.data.stories.map((story) => new Story(story));
 
     // build an instance of our own class using the new array of stories
     return new StoryList(stories);
@@ -81,11 +81,11 @@ class StoryList {
   async addStory(user, newStory) {
     // UNIMPLEMENTED: complete this function!
     const response = await axios({
-      method: "post",
+      method: 'post',
       url: `${BASE_URL}/stories`,
       username: user,
       data: {
-        token: localStorage.getItem("token"),
+        token: localStorage.getItem('token'),
         story: {
           title: newStory.title,
           author: newStory.author,
@@ -131,8 +131,8 @@ class User {
     this.createdAt = createdAt;
 
     // instantiate Story instances for the user's favorites and ownStories
-    this.favorites = favorites.map(s => new Story(s));
-    this.ownStories = ownStories.map(s => new Story(s));
+    this.favorites = favorites.map((s) => new Story(s));
+    this.ownStories = ownStories.map((s) => new Story(s));
 
     // store the login token on the user so it's easy to find for API calls.
     this.loginToken = token;
@@ -148,7 +148,7 @@ class User {
   static async signup(username, password, name) {
     const response = await axios({
       url: `${BASE_URL}/signup`,
-      method: "POST",
+      method: 'POST',
       data: { user: { username, password, name } },
     });
 
@@ -175,7 +175,7 @@ class User {
   static async login(username, password) {
     const response = await axios({
       url: `${BASE_URL}/login`,
-      method: "POST",
+      method: 'POST',
       data: { user: { username, password } },
     });
 
@@ -201,7 +201,7 @@ class User {
     try {
       const response = await axios({
         url: `${BASE_URL}/users/${username}`,
-        method: "GET",
+        method: 'GET',
         params: { token },
       });
 
@@ -218,8 +218,19 @@ class User {
         token
       );
     } catch (err) {
-      console.error("loginViaStoredCredentials failed", err);
+      console.error('loginViaStoredCredentials failed', err);
       return null;
     }
+  }
+  static async addFavoriteStory(favStoryId) {
+    const response = await axios({
+      method: 'post',
+      url: `${BASE_URL}/users/${localStorage.getItem(
+        'username'
+      )}/favorites/${favStoryId}`,
+      data: {
+        token: localStorage.getItem('token'),
+      },
+    });
   }
 }

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 // This is the global list of the stories, an instance of StoryList
 let storyList;
@@ -25,6 +25,7 @@ function generateStoryMarkup(story) {
   const hostName = story.getHostName();
   return $(`
       <li id="${story.storyId}">
+      <img src="./assets/Asset2.svg" class="star" alt="Favorite Star" />
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -38,7 +39,7 @@ function generateStoryMarkup(story) {
 /** Gets list of stories from server, generates their HTML, and puts on page. */
 
 function putStoriesOnPage() {
-  console.debug("putStoriesOnPage");
+  console.debug('putStoriesOnPage');
 
   $allStoriesList.empty();
 
@@ -55,13 +56,13 @@ function putStoriesOnPage() {
 async function getAndShowNewStory(evt) {
   evt.preventDefault();
   // Get form data: author, title, url
-  const author = $("#author").val();
-  const title = $("#title").val();
-  const url = $("#url").val();
+  const author = $('#author').val();
+  const title = $('#title').val();
+  const url = $('#url').val();
   // Get user info from local storage
-  const user = localStorage.getItem("username");
+  const user = localStorage.getItem('username');
 
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token');
   const userStory = {
     author,
     title,
@@ -73,4 +74,22 @@ async function getAndShowNewStory(evt) {
   $allStoriesList.prepend($newStoryMarkup);
 }
 
-$("#submit-btn").on("click", getAndShowNewStory);
+$('#submit-btn').on('click', getAndShowNewStory);
+
+$allStoriesList.on('click', '.star', async function (evt) {
+  const currUser = await getUser(
+    localStorage.getItem('username'),
+    localStorage.getItem('token')
+  );
+  const userFavoriteStories = currUser.data.user.favorites;
+  console.log(userFavoriteStories);
+  console.log(currUser);
+  const imgSrc = evt.target.attributes.src.value;
+  if (imgSrc === './assets/Asset2.svg') {
+    const clickedStoryId = evt.target.parentElement.id;
+    User.addFavoriteStory(clickedStoryId);
+    evt.target.attributes.src.value = './assets/Asset1.svg';
+    console.log(evt.target.attributes);
+    console.log(imgSrc);
+  }
+});
