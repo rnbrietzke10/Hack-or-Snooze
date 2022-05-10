@@ -72,6 +72,7 @@ async function getAndShowNewStory(evt) {
   $allStoriesList.prepend($newStoryMarkup);
 
   $('#submit-story-form').trigger('reset');
+  $submitStoryForm.slideUp('slow');
 }
 
 $('#submit-btn').on('click', getAndShowNewStory);

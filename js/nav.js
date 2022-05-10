@@ -42,7 +42,7 @@ function updateNavOnLogin() {
 
 function navSubmitClick(evt) {
   evt.preventDefault();
-  $submitStoryForm.show();
+  $submitStoryForm.slideDown('slow');
   console.log('clicked');
 }
 
