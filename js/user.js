@@ -114,14 +114,3 @@ function updateUIOnUserLogin() {
 
   updateNavOnLogin();
 }
-
-async function getUser(username, token) {
-  const user = await axios({
-    url: `${BASE_URL}/users/${username}`,
-    method: 'GET',
-    params: {
-      token,
-    },
-  });
-  return user;
-}

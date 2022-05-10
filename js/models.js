@@ -222,7 +222,7 @@ class User {
       return null;
     }
   }
-  static async addFavoriteStory(favStoryId) {
+  async addFavoriteStory(favStoryId) {
     const response = await axios({
       method: 'post',
       url: `${BASE_URL}/users/${localStorage.getItem(

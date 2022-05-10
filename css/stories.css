@@ -41,3 +41,22 @@
   height: 13px;
   cursor: pointer;
 }
+
+.hidden {
+  display: none;
+}
+
+.cls-1 {
+  stroke: gray;
+  stroke-miterlimit: 10;
+  stroke-width: 2px;
+  height: 13px;
+  cursor: pointer;
+}
+.favorite {
+  fill: #808080;
+}
+
+.no-fill {
+  fill: none;
+}
