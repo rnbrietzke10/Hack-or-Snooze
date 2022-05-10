@@ -25,7 +25,7 @@ async function generateStoryMarkup(story) {
   const hostName = story.getHostName();
   return $(`
       <li id="${story.storyId}">
-      ${renderStar()}
+      ${currentUser ? userFavStory(story.storyId) : ''}
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -46,14 +46,6 @@ async function putStoriesOnPage() {
   // loop through all of our stories and generate HTML for them
   for (let story of storyList.stories) {
     const $story = await generateStoryMarkup(story);
-    // if (showFavoritedStories(story.storyId)) {
-    $('.cls-1').toggleClass('favorite');
-    $('.cls-1').toggleClass('no-fill');
-    // } else {
-    //   $('.cls-1').removeClass('favorite');
-    //   $('.cls-1').addClass('no-fill');
-    // }
-    // console.log($story);
     $allStoriesList.append($story);
   }
 
@@ -76,20 +68,22 @@ async function getAndShowNewStory(evt) {
   };
 
   const newStory = await storyList.addStory(user, userStory);
-  const $newStoryMarkup = generateStoryMarkup(newStory);
+  const $newStoryMarkup = await generateStoryMarkup(newStory);
   $allStoriesList.prepend($newStoryMarkup);
+
+  $('#submit-story-form').trigger('reset');
 }
 
 $('#submit-btn').on('click', getAndShowNewStory);
 
-$allStoriesList.on('click', '.cls-1', async function (evt) {
+$allStoriesList.on('click', '.star', async function (evt) {
   const $eventTarget = $(evt.target);
-  const clickedStoryId = evt.target.parentElement.id;
+  const clickedStoryId = $eventTarget.closest('li').attr('id');
+  console.log(clickedStoryId);
   currentUser.addFavoriteStory(clickedStoryId);
   console.log($eventTarget);
   // If filled star is hidden: remove hidden class and add hidden class to star with no fill
-  $eventTarget.toggleClass('favorite');
-  $eventTarget.toggleClass('no-fill');
+  $eventTarget.closest('.poly').addClass('favorite');
 });
 
 function showFavoritedStories(favStoryId) {
@@ -99,20 +93,25 @@ function showFavoritedStories(favStoryId) {
       return true;
     }
   }
+
   return false;
 }
 
-function renderStar() {
+/***
+ *  Function that creates HTML for favorite star
+ *
+ */
+function renderStar(addClass = '') {
   return `
     <svg
-      class="cls-1 no-fill"
+      class="cls-1 star"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 150.04 142.71"
     >
-      <g id="Layer_2" data-name="Layer 2">
-        <g id="Layer_1-2" data-name="Layer 1">
+      <g class="Layer_2" data-name="Layer 2">
+        <g class="Layer_1-2" data-name="Layer 1">
           <polygon
-            class="cls-1"
+            class="cls-1 poly ${addClass}"
             points="40.21 90.21 5.37 56.27 53.5 49.27 75.02 5.65 96.55 49.26 144.68 56.24 109.86 90.2 118.09 138.13 75.04 115.51 31.99 138.15 40.21 90.21"
           />
           <path
@@ -122,4 +121,8 @@ function renderStar() {
         </g>
       </g>
     </svg>`;
+}
+
+function userFavStory(storyId) {
+  return showFavoritedStories(storyId) ? renderStar('favorite') : renderStar();
 }

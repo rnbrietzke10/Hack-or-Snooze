@@ -107,9 +107,8 @@ function saveUserCredentialsInLocalStorage() {
  * - generate the user profile part of the page
  */
 
-function updateUIOnUserLogin() {
+async function updateUIOnUserLogin() {
   console.debug('updateUIOnUserLogin');
-
   $allStoriesList.show();
 
   updateNavOnLogin();

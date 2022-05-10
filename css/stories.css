@@ -47,16 +47,14 @@
 }
 
 .cls-1 {
-  stroke: gray;
+  stroke: #808080;
   stroke-miterlimit: 10;
   stroke-width: 2px;
   height: 13px;
   cursor: pointer;
+  fill: #808080;
+  fill-opacity: 0;
 }
 .favorite {
-  fill: #808080;
-}
-
-.no-fill {
-  fill: none;
+  fill-opacity: 1;
 }
