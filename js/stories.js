@@ -80,14 +80,16 @@ $('#submit-btn').on('click', getAndShowNewStory);
 $allStoriesList.on('click', '.star', async function (evt) {
   const $eventTarget = $(evt.target);
   const clickedStoryId = $eventTarget.closest('li').attr('id');
-  console.log(clickedStoryId);
-  currentUser.addFavoriteStory(clickedStoryId);
-  console.log($eventTarget);
-  // If filled star is hidden: remove hidden class and add hidden class to star with no fill
-  $eventTarget.closest('.poly').addClass('favorite');
+  if (!$eventTarget.closest('.poly').hasClass('favorite')) {
+    currentUser.addFavoriteStory(clickedStoryId);
+    $eventTarget.closest('.poly').addClass('favorite');
+  } else {
+    currentUser.removeFavoriteStory(clickedStoryId);
+    $eventTarget.closest('.poly').removeClass('favorite');
+  }
 });
 
-function showFavoritedStories(favStoryId) {
+function isFavoritedStory(favStoryId) {
   const userFavoriteStories = currentUser.favorites;
   for (let story of userFavoriteStories) {
     if (favStoryId === story.storyId) {
@@ -125,5 +127,5 @@ function renderStar(addClass = '') {
 }
 
 function userFavStory(storyId) {
-  return showFavoritedStories(storyId) ? renderStar('favorite') : renderStar();
+  return isFavoritedStory(storyId) ? renderStar('favorite') : renderStar();
 }

@@ -233,4 +233,16 @@ class User {
       },
     });
   }
+
+  async removeFavoriteStory(favStoryId) {
+    const response = await axios({
+      method: 'delete',
+      url: `${BASE_URL}/users/${localStorage.getItem(
+        'username'
+      )}/favorites/${favStoryId}`,
+      data: {
+        token: localStorage.getItem('token'),
+      },
+    });
+  }
 }

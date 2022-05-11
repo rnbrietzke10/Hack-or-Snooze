@@ -25,6 +25,8 @@ async function login(evt) {
 
   saveUserCredentialsInLocalStorage();
   updateUIOnUserLogin();
+
+  $('.account-forms-container').hide();
 }
 
 $loginForm.on('submit', login);
@@ -45,8 +47,8 @@ async function signup(evt) {
 
   saveUserCredentialsInLocalStorage();
   updateUIOnUserLogin();
-
   $signupForm.trigger('reset');
+  $('.account-forms-container').hide();
 }
 
 $signupForm.on('submit', signup);
@@ -58,6 +60,8 @@ $signupForm.on('submit', signup);
 
 function logout(evt) {
   console.debug('logout', evt);
+
+  removeOrAddLinks();
   localStorage.clear();
   location.reload();
 }
@@ -80,6 +84,8 @@ async function checkForRememberedUser() {
 
   // try to log in with these credentials (will be null if login failed)
   currentUser = await User.loginViaStoredCredentials(token, username);
+
+  removeOrAddLinks();
 }
 
 /** Sync current user information to localStorage.
@@ -109,7 +115,19 @@ function saveUserCredentialsInLocalStorage() {
 
 async function updateUIOnUserLogin() {
   console.debug('updateUIOnUserLogin');
-  $allStoriesList.show();
+  putStoriesOnPage();
 
   updateNavOnLogin();
+}
+
+// Hide or show sumbit, favorites and my stories from navbar depending on if there is a current user.
+function removeOrAddLinks() {
+  const links = [$submitLink, $favLink, $myStoriesLink];
+  if (currentUser) {
+    links.forEach((link) => link.removeClass('hidden'));
+    $('#nav-all').addClass('logged-in');
+  } else {
+    links.forEach((link) => link.addClass('hidden'));
+    $('#nav-all').removeClass('logged-in');
+  }
 }
