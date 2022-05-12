@@ -46,6 +46,11 @@
   display: none;
 }
 
+#fav-stories li,
+#my-stories li {
+  list-style-type: none;
+}
+
 .cls-1 {
   stroke: #808080;
   stroke-miterlimit: 10;
@@ -58,3 +63,44 @@
 .favorite {
   fill-opacity: 1;
 }
+
+#delete-story {
+  height: 18px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+#delete-story:hover .cls-rect-1 {
+  fill: #ff0000;
+  stroke: #ff0000;
+}
+#delete-story:hover #can-handle {
+  stroke: #ff0000;
+}
+
+.cls-rect-1,
+.cls-3 {
+  fill: #808080;
+  stroke: #808080;
+  stroke-miterlimit: 10;
+}
+
+.cls-rect-1,
+.cls-2 {
+  stroke: #fff;
+  stroke-miterlimit: 10;
+}
+
+.cls-2 {
+  fill: #fff;
+  stroke-width: 0.75px;
+}
+
+.cls-3 {
+  fill: none;
+  stroke-width: 2px;
+}
+/* 
+.cls-rect-1:hover {
+  fill: #ff0000;
+  stroke: #ff0000;
+} */

@@ -115,8 +115,10 @@ function saveUserCredentialsInLocalStorage() {
 
 async function updateUIOnUserLogin() {
   console.debug('updateUIOnUserLogin');
-  putStoriesOnPage();
+  hidePageComponents();
 
+  await putStoriesOnPage();
+  $allStoriesList.show();
   updateNavOnLogin();
 }
 
@@ -131,3 +133,28 @@ function removeOrAddLinks() {
     $('#nav-all').removeClass('logged-in');
   }
 }
+
+/**
+ * Creates user profile HTML
+ */
+function userProfileHtml() {
+  const stringDate = currentUser.createdAt.toString();
+  const date = stringDate.substr(0, stringDate.indexOf('T'));
+  return $(
+    `<h4>User Profile Info</h4> <div id="user-info"><p id="user-name">Name: ${currentUser.name}</p><p id="user-username">Username: ${currentUser.username}</p><p id="user-account-created">Account Created: ${date}</p></div>`
+  );
+}
+
+/**
+ * Appends user profile HTML to page
+ *  - Hides other components on page
+ */
+
+function putUserProfileOnPage() {
+  hidePageComponents();
+  const $profile = userProfileHtml();
+  $userProfile.append($profile);
+  $userProfile.show();
+}
+
+$body.on('click', '#nav-user-profile', putUserProfileOnPage);

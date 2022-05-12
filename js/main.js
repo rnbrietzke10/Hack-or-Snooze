@@ -6,6 +6,8 @@ const $body = $('body');
 
 const $storiesLoadingMsg = $('#stories-loading-msg');
 const $allStoriesList = $('#all-stories-list');
+const $favStoriesList = $('#fav-stories');
+const $myStoriesList = $('#my-stories');
 
 const $loginForm = $('#login-form');
 const $signupForm = $('#signup-form');
@@ -13,6 +15,9 @@ const $signupForm = $('#signup-form');
 const $navLogin = $('#nav-login');
 const $navUserProfile = $('#nav-user-profile');
 const $navLogOut = $('#nav-logout');
+
+const $userProfile = $('#user-profile-contianer');
+
 const $submitStoryForm = $('#submit-story-form');
 const $submitLink = $('#submit-link');
 const $favLink = $('#fav-link');
@@ -24,7 +29,14 @@ const $myStoriesLink = $('#my-stories-link');
  */
 
 function hidePageComponents() {
-  const components = [$allStoriesList, $loginForm, $signupForm];
+  const components = [
+    $allStoriesList,
+    $loginForm,
+    $signupForm,
+    $favStoriesList,
+    $myStoriesList,
+    $submitStoryForm,
+  ];
   components.forEach((c) => c.hide());
 }
 

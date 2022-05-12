@@ -9,7 +9,7 @@ async function getAndShowStoriesOnStart() {
   storyList = await StoryList.getStories();
   $storiesLoadingMsg.remove();
 
-  putStoriesOnPage();
+  await putStoriesOnPage();
 }
 
 /**
@@ -25,7 +25,7 @@ async function generateStoryMarkup(story) {
   const hostName = story.getHostName();
   return $(`
       <li id="${story.storyId}">
-      ${currentUser ? userFavStory(story.storyId) : ''}
+      ${currentUser ? await userFavStory(story.storyId) : ''}
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -68,6 +68,7 @@ async function getAndShowNewStory(evt) {
   };
 
   const newStory = await storyList.addStory(user, userStory);
+  currentUser.ownStories.push(newStory);
   const $newStoryMarkup = await generateStoryMarkup(newStory);
   $allStoriesList.prepend($newStoryMarkup);
 
@@ -77,14 +78,26 @@ async function getAndShowNewStory(evt) {
 
 $('#submit-btn').on('click', getAndShowNewStory);
 
+/**
+ * On click of star will change background to show if the story is a favorite of the user
+ *
+ */
+
 $allStoriesList.on('click', '.star', async function (evt) {
   const $eventTarget = $(evt.target);
+
   const clickedStoryId = $eventTarget.closest('li').attr('id');
   if (!$eventTarget.closest('.poly').hasClass('favorite')) {
-    currentUser.addFavoriteStory(clickedStoryId);
+    const storyFound = storyList.stories.find(
+      (story) => story.storyId === clickedStoryId
+    );
+    await currentUser.addFavoriteStory(storyFound);
     $eventTarget.closest('.poly').addClass('favorite');
   } else {
-    currentUser.removeFavoriteStory(clickedStoryId);
+    const storyFound = storyList.stories.find(
+      (story) => story.storyId === clickedStoryId
+    );
+    await currentUser.removeFavoriteStory(storyFound);
     $eventTarget.closest('.poly').removeClass('favorite');
   }
 });
@@ -96,13 +109,12 @@ function isFavoritedStory(favStoryId) {
       return true;
     }
   }
-
   return false;
 }
 
 /***
  *  Function that creates HTML for favorite star
- *
+ *  - accepts class to change fill if start is in users favorite list.
  */
 function renderStar(addClass = '') {
   return `
@@ -129,3 +141,68 @@ function renderStar(addClass = '') {
 function userFavStory(storyId) {
   return isFavoritedStory(storyId) ? renderStar('favorite') : renderStar();
 }
+
+/**
+ * Adds favorite stories on page after click of favorites link
+ * - Hides other page components
+ */
+
+async function putFavStoriesOnPage() {
+  hidePageComponents();
+  $favStoriesList.empty();
+  const favStories = currentUser.favorites;
+  if (favStories.length === 0) {
+    $favStoriesList.append($('<p>No favorites added!</p>'));
+  } else {
+    for (let story of favStories) {
+      const $favStoryMarkup = await generateStoryMarkup(story);
+      $favStoriesList.prepend($favStoryMarkup);
+    }
+  }
+  $favStoriesList.show();
+}
+
+$favLink.on('click', putFavStoriesOnPage);
+
+/**
+ * Adds user stories on page after click of my stories link
+ * - Hides other page components
+ */
+
+async function showMyStories() {
+  hidePageComponents();
+  $myStoriesList.empty();
+  if (currentUser.ownStories.length === 0) {
+    $myStoriesList.append($(`<p>No stories added by user yet!</p>`));
+  } else {
+    const myStories = currentUser.ownStories;
+    for (let story of myStories) {
+      const $myStoryMarkUp = await generateStoryMarkup(story);
+      $myStoryMarkUp.prepend(
+        $(
+          '<svg id="delete-story" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">  <rect id="rect-body" class="cls-rect-1" x="11.248" y="11.123" width="28.78" height="33.786" rx="6.182"/>  <rect id="rect-6" class="cls-2" x="16.521" y="18.912" width="3.5" height="22.45" rx="2.279"/>  <rect id="rect-5" class="cls-2" x="24.385" y="18.912" width="3.5" height="22.45" rx="2.279"/>  <rect id="rect-4" class="cls-2" x="31.5" y="18.855" width="3.5" height="22.45" rx="2.279"/>  <rect id="can-handle" class="cls-3" x="18.093" y="6.399" width="14.882" height="8.214" rx="3.333"/>  <rect id="can-top" class="cls-rect-1" x="7.598" y="11.162" width="36.781" height="6.268" rx="3.134"/></svg>'
+        )
+      );
+      $myStoriesList.prepend($myStoryMarkUp);
+    }
+  }
+  $myStoriesList.show();
+}
+
+$myStoriesLink.on('click', showMyStories);
+
+/**
+ * Function to remove user story
+ * - gets story id
+ * - uses story to remove story from storylist and API
+ */
+
+async function removeMyStory(evt) {
+  const $eventTarget = evt.target;
+  const storyListItem = $eventTarget.closest('li');
+  const $storyId = $(storyListItem).attr('id');
+  await storyList.removeStory($storyId);
+  await showMyStories();
+}
+
+$body.on('click', '#delete-story', removeMyStory);
