@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 // This is the global list of the stories, an instance of StoryList
 let storyList;
@@ -20,7 +20,7 @@ async function getAndShowStoriesOnStart() {
  */
 
 async function generateStoryMarkup(story) {
-  // console.debug("generateStoryMarkup", story);
+  console.debug("generateStoryMarkup", story);
 
   const hostName = story.getHostName();
   return $(`
@@ -39,7 +39,7 @@ async function generateStoryMarkup(story) {
 /** Gets list of stories from server, generates their HTML, and puts on page. */
 
 async function putStoriesOnPage() {
-  console.debug('putStoriesOnPage');
+  console.debug("putStoriesOnPage");
 
   $allStoriesList.empty();
 
@@ -47,8 +47,8 @@ async function putStoriesOnPage() {
   for (let story of storyList.stories) {
     const $story = await generateStoryMarkup(story);
     // if (showFavoritedStories(story.storyId)) {
-    $('.cls-1').toggleClass('favorite');
-    $('.cls-1').toggleClass('no-fill');
+    $(".cls-1").toggleClass("favorite");
+    $(".cls-1").toggleClass("no-fill");
     // } else {
     //   $('.cls-1').removeClass('favorite');
     //   $('.cls-1').addClass('no-fill');
@@ -64,11 +64,11 @@ async function putStoriesOnPage() {
 async function getAndShowNewStory(evt) {
   evt.preventDefault();
   // Get form data: author, title, url
-  const author = $('#author').val();
-  const title = $('#title').val();
-  const url = $('#url').val();
+  const author = $("#author").val();
+  const title = $("#title").val();
+  const url = $("#url").val();
   // Get user info from local storage
-  const user = localStorage.getItem('username');
+  const user = localStorage.getItem("username");
   const userStory = {
     author,
     title,
@@ -80,16 +80,16 @@ async function getAndShowNewStory(evt) {
   $allStoriesList.prepend($newStoryMarkup);
 }
 
-$('#submit-btn').on('click', getAndShowNewStory);
+$("#submit-btn").on("click", getAndShowNewStory);
 
-$allStoriesList.on('click', '.cls-1', async function (evt) {
+$allStoriesList.on("click", ".cls-1", async function (evt) {
   const $eventTarget = $(evt.target);
   const clickedStoryId = evt.target.parentElement.id;
   currentUser.addFavoriteStory(clickedStoryId);
   console.log($eventTarget);
   // If filled star is hidden: remove hidden class and add hidden class to star with no fill
-  $eventTarget.toggleClass('favorite');
-  $eventTarget.toggleClass('no-fill');
+  $eventTarget.toggleClass("favorite");
+  $eventTarget.toggleClass("no-fill");
 });
 
 function showFavoritedStories(favStoryId) {
