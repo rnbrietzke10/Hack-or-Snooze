@@ -94,24 +94,29 @@ class StoryList {
       },
     });
     return new Story(response.data.story);
+  }
 
-    // console.dir(response);
-    //console.log(response.data);
-    /**
-     * OUTPUT FROM ABOVE CONSOLE.LOG()
-     * {story: {…}}
-            story:
-            author: "Me"
-            createdAt: "2022-05-08T01:51:50.803Z"
-            storyId: "4b7b7fed-061c-48f3-ba3a-53d14b7929aa"
-            title: "Test"
-            updatedAt: "2022-05-08T01:51:50.803Z"
-            url: "http://meow.com"
-            username: "Ren3Test"
-     */
+  /** Removes story data from API and removes it from story list.
+   * - storyId
+   * - user token
+   */
+  async removeStory(id) {
+    await axios({
+      method: 'delete',
+      url: `${BASE_URL}/stories/${id}`,
+      data: {
+        token: localStorage.getItem('token'),
+      },
+    });
+    this.stories = this.stories.filter((story) => story.storyId !== id);
+    currentUser.ownStories = currentUser.ownStories.filter(
+      (story) => story.storyId !== id
+    );
+    currentUser.favorites = currentUser.favorites.filter(
+      (story) => story.storyId !== id
+    );
   }
 }
-
 /******************************************************************************
  * User: a user in the system (only used to represent the current user)
  */
@@ -222,12 +227,39 @@ class User {
       return null;
     }
   }
-  async addFavoriteStory(favStoryId) {
-    const response = await axios({
+
+  /**
+   * Allow user to add a story to their favorites array
+   *   - need user token
+   *   - need storyId
+   **/
+  async addFavoriteStory(story) {
+    this.favorites.push(story);
+    await axios({
       method: 'post',
-      url: `${BASE_URL}/users/${localStorage.getItem(
-        'username'
-      )}/favorites/${favStoryId}`,
+      url: `${BASE_URL}/users/${localStorage.getItem('username')}/favorites/${
+        story.storyId
+      }`,
+      data: {
+        token: localStorage.getItem('token'),
+      },
+    });
+  }
+
+  /**
+   *
+   * Allow user to remove a story to their favorites array
+   *   - need user token
+   *   - need storyId
+   **/
+
+  async removeFavoriteStory(story) {
+    this.favorites = this.favorites.filter((s) => s.storyId !== story.storyId);
+    await axios({
+      method: 'delete',
+      url: `${BASE_URL}/users/${localStorage.getItem('username')}/favorites/${
+        story.storyId
+      }`,
       data: {
         token: localStorage.getItem('token'),
       },

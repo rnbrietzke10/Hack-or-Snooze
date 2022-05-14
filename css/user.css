@@ -12,3 +12,20 @@
 .account-forms-container {
   padding-left: 20px;
 }
+
+#user-profile-contianer {
+  padding: 20px 20px;
+  display: flex;
+
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#user-info {
+  margin-top: 20px;
+}
+
+#user-profile-contianer p {
+  margin: 0;
+  font-size: 14.5px;
+}

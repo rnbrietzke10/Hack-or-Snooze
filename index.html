@@ -35,7 +35,15 @@
     <nav>
       <div class="navbar-brand">
         <a class="nav-link" href="#" id="nav-all">Hack or Snooze</a>
-        <a class="nav-link" href="#" id="submit-link">submit</a>
+        <a class="nav-link hidden logged-in" href="#" id="submit-link"
+          >submit</a
+        >
+        <a class="nav-link hidden logged-in" href="#" id="fav-link"
+          >favorites</a
+        >
+        <a class="nav-link hidden logged-in" href="#" id="my-stories-link"
+          >my stories</a
+        >
       </div>
       <div class="nav-right">
         <a class="nav-link" href="#" id="nav-login">login/signup</a>
@@ -78,6 +86,9 @@
 
       <!-- List of all stories -->
       <ol id="all-stories-list" class="stories-list"></ol>
+      <ol id="fav-stories" class="stories-list hidden"></ol>
+      <ol id="my-stories" class="stories-list hidden"></ol>
+      <div id="user-profile-contianer" class="hidden"></div>
     </section>
 
     <!-- Login and signup forms -->

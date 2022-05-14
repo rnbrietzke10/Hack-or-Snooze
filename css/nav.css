@@ -16,14 +16,18 @@ nav {
   font-size: 0.85rem;
   margin: 0 3px;
   padding-right: 10px;
-  border-right: 2px solid #000;
 }
 
-#submit-link {
-  font-weight: 400;
+#nav-all {
+  font-weight: 700;
 }
 
 .nav-right {
   margin-left: auto;
   text-align: right;
+}
+
+.logged-in {
+  border-right: 1.5px solid #000;
+  font-weight: 400;
 }

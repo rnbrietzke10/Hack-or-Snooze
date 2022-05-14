@@ -25,6 +25,8 @@ async function login(evt) {
 
   saveUserCredentialsInLocalStorage();
   updateUIOnUserLogin();
+
+  $('.account-forms-container').hide();
 }
 
 $loginForm.on('submit', login);
@@ -45,8 +47,8 @@ async function signup(evt) {
 
   saveUserCredentialsInLocalStorage();
   updateUIOnUserLogin();
-
   $signupForm.trigger('reset');
+  $('.account-forms-container').hide();
 }
 
 $signupForm.on('submit', signup);
@@ -58,6 +60,8 @@ $signupForm.on('submit', signup);
 
 function logout(evt) {
   console.debug('logout', evt);
+
+  removeOrAddLinks();
   localStorage.clear();
   location.reload();
 }
@@ -80,6 +84,8 @@ async function checkForRememberedUser() {
 
   // try to log in with these credentials (will be null if login failed)
   currentUser = await User.loginViaStoredCredentials(token, username);
+
+  removeOrAddLinks();
 }
 
 /** Sync current user information to localStorage.
@@ -107,10 +113,48 @@ function saveUserCredentialsInLocalStorage() {
  * - generate the user profile part of the page
  */
 
-function updateUIOnUserLogin() {
+async function updateUIOnUserLogin() {
   console.debug('updateUIOnUserLogin');
+  hidePageComponents();
 
+  await putStoriesOnPage();
   $allStoriesList.show();
-
   updateNavOnLogin();
 }
+
+// Hide or show sumbit, favorites and my stories from navbar depending on if there is a current user.
+function removeOrAddLinks() {
+  const links = [$submitLink, $favLink, $myStoriesLink];
+  if (currentUser) {
+    links.forEach((link) => link.removeClass('hidden'));
+    $('#nav-all').addClass('logged-in');
+  } else {
+    links.forEach((link) => link.addClass('hidden'));
+    $('#nav-all').removeClass('logged-in');
+  }
+}
+
+/**
+ * Creates user profile HTML
+ */
+function userProfileHtml() {
+  const stringDate = currentUser.createdAt.toString();
+  const date = stringDate.substr(0, stringDate.indexOf('T'));
+  return $(
+    `<h4>User Profile Info</h4> <div id="user-info"><p id="user-name">Name: ${currentUser.name}</p><p id="user-username">Username: ${currentUser.username}</p><p id="user-account-created">Account Created: ${date}</p></div>`
+  );
+}
+
+/**
+ * Appends user profile HTML to page
+ *  - Hides other components on page
+ */
+
+function putUserProfileOnPage() {
+  hidePageComponents();
+  const $profile = userProfileHtml();
+  $userProfile.append($profile);
+  $userProfile.show();
+}
+
+$body.on('click', '#nav-user-profile', putUserProfileOnPage);
